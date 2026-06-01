@@ -1,0 +1,19 @@
+# Backend
+backend/node_modules/
+backend/dist/
+backend/.env
+
+# Mobile
+mobile/.gradle/
+mobile/build/
+mobile/app/build/
+mobile/local.properties
+mobile/.idea/
+mobile/*.iml
+mobile/captures/
+mobile/.externalNativeBuild/
+mobile/.cxx/
+
+# OS
+.DS_Store
+Thumbs.db
