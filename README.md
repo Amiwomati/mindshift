@@ -30,7 +30,7 @@ POST /api/clicks/sync ──► Bull Queue "clicks-sync"
 ### Decisiones de diseño
 
 **Cola de mensajes (NestJS Bull)**
-Se eligió `@nestjs/bull` + Redis como equivalente al queue worker de Laravel. El endpoint `POST /clicks/sync` no hace insert directo a la base de datos: encola un job con todos los clics del usuario. El processor (`ClicksProcessor`) los procesa en **chunks de 100** con bulk insert via TypeORM `createQueryBuilder().insert()`. Esto permite:
+Se eligió `@nestjs/bull` + Redis. El endpoint `POST /clicks/sync` no hace insert directo a la base de datos: encola un job con todos los clics del usuario. El processor (`ClicksProcessor`) los procesa en **chunks de 100** con bulk insert via TypeORM `createQueryBuilder().insert()`. Esto permite:
 - Respuesta inmediata al cliente (no espera el insert)
 - Bulk inserts eficientes en lugar de N inserts individuales
 - Desacoplamiento entre recepción y persistencia
