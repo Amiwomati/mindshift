@@ -2,6 +2,8 @@ package com.mindshift.anxiety.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +21,7 @@ import com.mindshift.anxiety.viewmodel.SyncState
 
 @Composable
 fun AnxietyScreen(
+    onLogout: () -> Unit,
     viewModel: AnxietyViewModel = hiltViewModel()
 ) {
     val unsyncedCount by viewModel.unsyncedCount.collectAsState()
@@ -34,7 +37,18 @@ fun AnxietyScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = onLogout,
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ExitToApp,
+                        contentDescription = "Cerrar sesión",
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+            }
             Text(
                 text = "Hola, ${userName ?: "Paciente"}",
                 style = MaterialTheme.typography.headlineSmall,

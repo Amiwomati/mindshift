@@ -67,4 +67,12 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
+            _isLoggedIn.value = false
+            _authState.value = AuthState.Idle
+        }
+    }
 }

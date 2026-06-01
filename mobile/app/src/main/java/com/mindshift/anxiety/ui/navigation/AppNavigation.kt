@@ -39,7 +39,14 @@ fun AppNavigation() {
             )
         }
         composable(Screen.Anxiety.route) {
-            AnxietyScreen()
+            AnxietyScreen(
+                onLogout = {
+                    authViewModel.logout()
+                    navController.navigate(Screen.Auth.route) {
+                        popUpTo(Screen.Anxiety.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
