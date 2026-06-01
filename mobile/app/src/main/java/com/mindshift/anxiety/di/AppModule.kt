@@ -6,8 +6,8 @@ import com.mindshift.anxiety.data.local.ClickDao
 import com.mindshift.anxiety.data.local.ClickDatabase
 import com.mindshift.anxiety.data.preferences.UserPreferences
 import com.mindshift.anxiety.data.remote.ApiService
-import com.squareup.okhttp3.OkHttpClient
-import com.squareup.okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
