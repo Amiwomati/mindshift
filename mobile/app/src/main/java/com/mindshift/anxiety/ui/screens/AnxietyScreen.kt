@@ -28,6 +28,30 @@ fun AnxietyScreen(
     val syncState by viewModel.syncState.collectAsState()
     val lastSync by viewModel.lastSync.collectAsState()
     val userName by viewModel.userName.collectAsState()
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Cerrar sesión") },
+            text = {
+                Text("Tienes $unsyncedCount ${if (unsyncedCount == 1) "clic pendiente" else "clics pendientes"} de sincronizar. Si cierras sesión ahora, se perderán.")
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLogoutDialog = false
+                    onLogout()
+                }) {
+                    Text("Cerrar sesión", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -39,7 +63,7 @@ fun AnxietyScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 IconButton(
-                    onClick = onLogout,
+                    onClick = { if (unsyncedCount > 0) showLogoutDialog = true else onLogout() },
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
