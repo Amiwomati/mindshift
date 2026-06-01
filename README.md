@@ -43,7 +43,10 @@ Los clics se guardan primero en Room (`synced=false`). La sincronización ocurre
 Después de sincronizar exitosamente, los clics se marcan `synced=true` (no se eliminan, quedan como historial local).
 
 **Stats sin tiempo real**
-Los endpoints de estadísticas se descartaron del dashboard móvil. Solo existen como endpoints REST para uso de los especialistas vía herramientas externas (ej: Postman, dashboard web separado).
+Los endpoints de estadísticas y de historial de clics no se muestran en la app móvil. Existen como endpoints REST para uso de especialistas vía herramientas externas (ej: Postman, dashboard web separado).
+
+**Advertencia de logout con clics pendientes**
+Si el usuario intenta cerrar sesión con clics no sincronizados, la app muestra un diálogo de confirmación indicando cuántos clics se perderán. Si no hay clics pendientes, el logout es inmediato.
 
 ---
 
@@ -66,11 +69,13 @@ npm run start:dev
 ### Endpoints
 
 ```
-POST   /api/auth/register         Registrar paciente
-POST   /api/auth/login            Iniciar sesión
-POST   /api/clicks/sync           Sincronizar clics (requiere JWT)
-GET    /api/stats/top-patients    Top 10 pacientes por clics
-GET    /api/stats/total           Total de clics
+POST   /api/auth/register            Registrar paciente
+POST   /api/auth/login               Iniciar sesión
+POST   /api/clicks/sync              Sincronizar clics (requiere JWT)
+GET    /api/clicks?page=1&limit=20   Historial de clics del usuario autenticado (requiere JWT)
+GET    /api/clicks/stats             Clics agrupados por día del usuario autenticado (requiere JWT)
+GET    /api/stats/top-patients       Top 10 pacientes por clics
+GET    /api/stats/total              Total de clics
 ```
 
 #### POST /api/auth/register
@@ -99,6 +104,34 @@ GET    /api/stats/total           Total de clics
 
 // Response 201
 { "message": "2 clicks encolados para procesamiento", "queued": 2 }
+```
+
+#### GET /api/clicks
+```json
+// Header: Authorization: Bearer eyJ...
+// Query params opcionales: page (default 1), limit (default 20)
+
+// Response 200
+{
+  "data": [
+    { "id": 42, "clicked_at": "2026-06-01T05:10:00.000Z" },
+    { "id": 41, "clicked_at": "2026-06-01T05:09:30.000Z" }
+  ],
+  "total": 42,
+  "page": 1,
+  "last_page": 3
+}
+```
+
+#### GET /api/clicks/stats
+```json
+// Header: Authorization: Bearer eyJ...
+
+// Response 200
+[
+  { "date": "2026-06-01", "count": 15 },
+  { "date": "2026-05-31", "count": 27 }
+]
 ```
 
 #### GET /api/stats/top-patients?from=2024-01-01&to=2024-01-31
@@ -167,7 +200,8 @@ Launch
                     ├── Botón "Tengo ansiedad" → guarda en Room (offline)
                     ├── Contador de clics pendientes
                     ├── Botón "Sincronizar" → envía al backend
-                    └── WorkManager → sync automático cada 15 min
+                    ├── WorkManager → sync automático cada 15 min
+                    └── Logout → diálogo de advertencia si hay clics pendientes
 ```
 
 ---
